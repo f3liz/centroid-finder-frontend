@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 
 export default function PreviewPage() {
-    const { filename = '' } = useParams();
+    const { filename } = useParams();
 
     return (
         <div>
