@@ -14,7 +14,7 @@ export default function PreviewPage() {
   const previewWidth = 320; // width for preview
   const previewHeight = 240; // height for preview
 
-  // fetch thumbnail when filename changes
+  // Fetch thumbnail when filename changes
   useEffect(() => {
     if (filename) {
       getThumbnail();
@@ -30,14 +30,14 @@ export default function PreviewPage() {
     }
   }, [imageUrl, threshold, targetColor]);
 
-  // get the video thumbnail from server
+  // GET the video thumbnail from server
   const getThumbnail = async () => {
     const res = await fetch(`http://localhost:3000/thumbnail/${filename}`);
     const blob = await res.blob();
     setImageUrl(URL.createObjectURL(blob));
   };
 
-  // convert a hex color string to RGB object
+  // Convert a hex color string to RGB object
   const hexToRgb = (hex) => {
     const bigint = parseInt(hex.slice(1), 16);
     return {
@@ -47,7 +47,7 @@ export default function PreviewPage() {
     };
   };
 
-  // calculate euclidean distance between two RGB colors
+  // Calculate euclidean distance between two RGB colors
   const colorDistance = (r1, g1, b1, r2, g2, b2) => {
     return Math.sqrt(
       Math.pow(r1 - r2, 2) +
@@ -63,7 +63,7 @@ export default function PreviewPage() {
     canvas.width = previewWidth;
     canvas.height = previewHeight;
 
-    // draw the original image into the canvas
+    // Draw the original image into the canvas
     context.drawImage(img, 0, 0, previewWidth, previewHeight);
 
     const imageData = context.getImageData(0, 0, previewWidth, previewHeight);
@@ -75,7 +75,7 @@ export default function PreviewPage() {
 
     const targetRgb = hexToRgb(targetColor); // convert hex to RGB for comparison
 
-    // convert image to binary based on color match
+    // Convert image to binary based on color match
     for (let y = 0; y < height; y++) {
       binaryMatrix[y] = [];
       for (let x = 0; x < width; x++) {
