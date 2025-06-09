@@ -32,7 +32,7 @@ export default function PreviewPage() {
 
   // fetch the video thumbnail from server
   const fetchThumbnail = async () => {
-    const res = await fetch(`http://localhost:3000/thumbnail/${filename}`);
+    const res = await fetch(`/thumbnail/${filename}`);
     const blob = await res.blob();
     setImageUrl(URL.createObjectURL(blob));
   };

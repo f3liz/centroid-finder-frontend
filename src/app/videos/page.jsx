@@ -20,7 +20,7 @@ export default function VideoChooserPage() {
     }, []);
 
     const getVideos = async () => {
-        const res = await fetch('http://localhost:3000/api/videos');
+        const res = await fetch('/api/videos');
 
         const data = await res.json();
 
