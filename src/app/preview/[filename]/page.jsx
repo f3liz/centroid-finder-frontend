@@ -9,8 +9,8 @@ export default function PreviewPage() {
   const [ threshold, setThreshold ] = useState(80); // threshold for binarization
   const [ targetColor, setTargetColor ] = useState("#ff0000"); // select target color
 
-  const canvasRef = useRef(null); // reference to the canvas DOM element
-  const previewRef = useRef(null); // reference to the original image DOM element
+  const binarizedCanvasRef = useRef(null); // reference to the canvas DOM element
+  const originalImageRef = useRef(null); // reference to the original image DOM element
   const previewWidth = 320; // width for preview
   const previewHeight = 240; // height for preview
 
@@ -57,43 +57,44 @@ export default function PreviewPage() {
   };
 
   const drawBinarizedImage = (img) => {
-    const canvas = canvasRef.current; // grabs canvas element
-    const ctx = canvas.getContext("2d"); // drawing context to be able to draw
+    const canvas = binarizedCanvasRef.current; // grabs canvas element
+    const context = canvas.getContext("2d"); // drawing context to be able to draw
 
     canvas.width = previewWidth;
     canvas.height = previewHeight;
 
     // draw the original image into the canvas
-    ctx.drawImage(img, 0, 0, previewWidth, previewHeight);
+    context.drawImage(img, 0, 0, previewWidth, previewHeight);
 
-    const imageData = ctx.getImageData(0, 0, previewWidth, previewHeight);
+    const imageData = context.getImageData(0, 0, previewWidth, previewHeight);
     const { data, width, height } = imageData;
 
-    const binary = []; // 2D binary matrix (1 = match, 0 = no match)
-    const visited = Array.from({ length: height }, () => Array(width).fill(false));
-    let maxGroup = []; // store the largest group of matching pixels
+    const binaryMatrix = []; // 2D binary matrix (1 = match, 0 = no match)
+    const visitedPixels = Array.from({ length: height }, () => Array(width).fill(false));
+    let largestRegion = []; // store the largest group of matching pixels
 
-    const target = hexToRgb(targetColor); // convert hex to RGB for comparison
+    const targetRgb = hexToRgb(targetColor); // convert hex to RGB for comparison
 
     // convert image to binary based on color match
     for (let y = 0; y < height; y++) {
-      binary[y] = [];
+      binaryMatrix[y] = [];
       for (let x = 0; x < width; x++) {
-        const idx = (y * width + x) * 4;
-        const r = data[idx];
-        const g = data[idx + 1];
-        const b = data[idx + 2];
-        const dist = colorDistance(r, g, b, target.red, target.green, target.blue);
+        const index = (y * width + x) * 4;
+        const red = data[index];
+        const green = data[index + 1];
+        const blue = data[index + 2];
+        
+        const distance = colorDistance(red, green, blue, targetRgb.red, targetRgb.green, targetRgb.blue);
 
-        const val = dist <= threshold ? 1 : 0;
-        binary[y][x] = val;
+        const val = distance <= threshold ? 1 : 0;
+        binaryMatrix[y][x] = val;
 
         const color = val ? 255 : 0;
-        data[idx] = data[idx + 1] = data[idx + 2] = color; // set to white or black
+        data[index] = data[index + 1] = data[index + 2] = color; // set to white or black
       }
     }
 
-    ctx.putImageData(imageData, 0, 0);
+    context.putImageData(imageData, 0, 0);
 
     // directions for DFS (up, down, left, right)
     const directions = [
@@ -107,16 +108,16 @@ export default function PreviewPage() {
     const dfs = (y, x, group) => {
       const stack = [[y, x]];
       while (stack.length > 0) {
-        const [cy, cx] = stack.pop();
+        const [currentY, currentX] = stack.pop();
         if (
-          cy < 0 || cy >= height || cx < 0 || cx >= width ||
-          visited[cy][cx] || binary[cy][cx] === 0
+          currentY < 0 || currentY >= height || currentX < 0 || currentX >= width ||
+          visitedPixels[currentY][currentX] || binaryMatrix[currentY][currentX] === 0
         ) continue;
 
-        visited[cy][cx] = true;
-        group.push([cy, cx]);
+        visitedPixels[currentY][currentX] = true;
+        group.push([currentY, currentX]);
         for (const [dy, dx] of directions) {
-          stack.push([cy + dy, cx + dx]);
+          stack.push([currentY + dy, currentX + dx]);
         }
       }
     };
@@ -124,32 +125,32 @@ export default function PreviewPage() {
     // find the largest group of white pixels
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
-        if (binary[y][x] === 1 && !visited[y][x]) {
+        if (binaryMatrix[y][x] === 1 && !visitedPixels[y][x]) {
           const group = [];
           dfs(y, x, group);
-          if (group.length > maxGroup.length) {
-            maxGroup = group;
+          if (group.length > largestRegion.length) {
+            largestRegion = group;
           }
         }
       }
     }
 
     // calculate centroid and draw circle on both images
-    if (maxGroup.length > 0) {
+    if (largestRegion.length > 0) {
       let sumX = 0, sumY = 0;
-      for (const [y, x] of maxGroup) {
+      for (const [y, x] of largestRegion) {
         sumX += x;
         sumY += y;
       }
-      const cx = sumX / maxGroup.length;
-      const cy = sumY / maxGroup.length;
+      const centroidX = sumX / largestRegion.length;
+      const centroidY = sumY / largestRegion.length;
 
       // draw a green unfilled circle on the binarized canvas
-      ctx.beginPath();
-      ctx.strokeStyle = "lime";
-      ctx.lineWidth = 2;
-      ctx.arc(cx, cy, 6, 0, 2 * Math.PI);
-      ctx.stroke();
+      context.beginPath();
+      context.strokeStyle = "lime";
+      context.lineWidth = 2;
+      context.arc(centroidX, centroidY, 6, 0, 2 * Math.PI);
+      context.stroke();
 
       // draw the circle on the original image using a separate canvas
       const previewCanvas = document.createElement("canvas");
@@ -164,12 +165,12 @@ export default function PreviewPage() {
       previewCtx.beginPath();
       previewCtx.strokeStyle = "lime";
       previewCtx.lineWidth = 2;
-      previewCtx.arc(cx, cy, 6, 0, 2 * Math.PI);
+      previewCtx.arc(centroidX, centroidY, 6, 0, 2 * Math.PI);
       previewCtx.stroke();
 
       // replace the preview image with the canvas data
-      if (previewRef.current) {
-        previewRef.current.src = previewCanvas.toDataURL();
+      if (originalImageRef.current) {
+        originalImageRef.current.src = previewCanvas.toDataURL();
       }
     }
   };
@@ -207,7 +208,7 @@ export default function PreviewPage() {
           <div>
             <h3>Original Frame</h3>
             <img
-              ref={previewRef} 
+              ref={originalImageRef} 
               src={imageUrl}
               alt="Thumbnail"
               width={previewWidth}
@@ -217,7 +218,7 @@ export default function PreviewPage() {
           <div>
             <h3>Binarized Preview</h3>
             <canvas
-              ref={canvasRef}
+              ref={binarizedCanvasRef}
               style={{ border: "1px solid black" }}
               width={previewWidth}
               height={previewHeight}
