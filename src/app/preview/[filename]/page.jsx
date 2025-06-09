@@ -1,13 +1,13 @@
-"use client"; 
+"use client";
 
 import { useParams } from "next/navigation"; // for dynamic route params like filename
 import { useEffect, useRef, useState } from "react";
 
 export default function PreviewPage() {
   const { filename } = useParams(); // get filename from the route
-  const [ imageUrl, setImageUrl ] = useState(null); // store thumbnail image URL
-  const [ threshold, setThreshold ] = useState(80); // threshold for binarization
-  const [ targetColor, setTargetColor ] = useState("#ff0000"); // select target color
+  const [imageUrl, setImageUrl] = useState(null); // store thumbnail image URL
+  const [threshold, setThreshold] = useState(80); // threshold for binarization
+  const [targetColor, setTargetColor] = useState("#ff0000"); // select target color
 
   const binarizedCanvasRef = useRef(null); // reference to the canvas DOM element
   const originalImageRef = useRef(null); // reference to the original image DOM element
@@ -21,7 +21,7 @@ export default function PreviewPage() {
     }
   }, [filename]);
 
-  // process image whenever it's loaded or threshold/color changes
+  // Process image whenever it's loaded or threshold/color changes
   useEffect(() => {
     if (imageUrl) {
       const img = new Image();
@@ -83,7 +83,7 @@ export default function PreviewPage() {
         const red = data[index];
         const green = data[index + 1];
         const blue = data[index + 2];
-        
+
         const distance = colorDistance(red, green, blue, targetRgb.red, targetRgb.green, targetRgb.blue);
 
         const val = distance <= threshold ? 1 : 0;
@@ -96,15 +96,15 @@ export default function PreviewPage() {
 
     context.putImageData(imageData, 0, 0);
 
-    // directions for DFS (up, down, left, right)
+    // Directions for DFS (up, down, left, right)
     const directions = [
-      [-1, 0], 
-      [1, 0], 
-      [0, -1], 
+      [-1, 0],
+      [1, 0],
+      [0, -1],
       [0, 1]
     ];
 
-    // find connected components using DFS
+    // Find connected components using DFS
     const dfs = (y, x, group) => {
       const stack = [[y, x]];
       while (stack.length > 0) {
@@ -122,7 +122,7 @@ export default function PreviewPage() {
       }
     };
 
-    // find the largest group of white pixels
+    // Find the largest group of white pixels
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         if (binaryMatrix[y][x] === 1 && !visitedPixels[y][x]) {
@@ -135,7 +135,7 @@ export default function PreviewPage() {
       }
     }
 
-    // calculate centroid and draw circle on both images
+    // Calculate centroid and draw circle on both images
     if (largestRegion.length > 0) {
       let sumX = 0, sumY = 0;
       for (const [y, x] of largestRegion) {
@@ -145,33 +145,62 @@ export default function PreviewPage() {
       const centroidX = sumX / largestRegion.length;
       const centroidY = sumY / largestRegion.length;
 
-      // draw a green unfilled circle on the binarized canvas
+      // Draw a green unfilled circle on the binarized canvas
       context.beginPath();
       context.strokeStyle = "lime";
       context.lineWidth = 2;
       context.arc(centroidX, centroidY, 6, 0, 2 * Math.PI);
       context.stroke();
 
-      // draw the circle on the original image using a separate canvas
+      // Draw the circle on the original image using a separate canvas
       const previewCanvas = document.createElement("canvas");
       const previewCtx = previewCanvas.getContext("2d");
       previewCanvas.width = previewWidth;
       previewCanvas.height = previewHeight;
 
-      // draw original image
+      // Draw original image
       previewCtx.drawImage(img, 0, 0, previewWidth, previewHeight);
 
-      // draw green circle
+      // Draw green circle
       previewCtx.beginPath();
       previewCtx.strokeStyle = "lime";
       previewCtx.lineWidth = 2;
       previewCtx.arc(centroidX, centroidY, 6, 0, 2 * Math.PI);
       previewCtx.stroke();
 
-      // replace the preview image with the canvas data
+      // Replace the preview image with the canvas data
       if (originalImageRef.current) {
         originalImageRef.current.src = previewCanvas.toDataURL();
       }
+    }
+  };
+
+  // Handle the POST request to start processing the video on the backend
+  const handleProcess = async () => {
+    try {
+      // Removing the '#' from the hex color code to use it in the URL
+      const hex = targetColor.replace('#', '');
+
+      // Sending the POST request to the backend with the filename, target color, and threshold
+      const res = await fetch(`http://localhost:3000/process/${filename}?targetColor=${hex}&threshold=${threshold}`, {
+        method: 'POST',
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // Alert the user that the job has started successfully
+        console.log("Started processing with Job ID:", data.jobId);
+        alert(`Started processing, Job ID: ${data.jobId}`);
+      } else {
+        // Alert the user that the job failed to start processing due to a backend error and log it
+        console.error("Failed to start processing:", data.error);
+        alert("Failed to start processing job.");
+      }
+    } catch (err) {
+      // Alert the user that there was an error with the request and log it
+      console.error("Error making request:", err);
+      alert("An error occurred while starting the job.");
     }
   };
 
@@ -208,7 +237,7 @@ export default function PreviewPage() {
           <div>
             <h3>Original Frame</h3>
             <img
-              ref={originalImageRef} 
+              ref={originalImageRef}
               src={imageUrl}
               alt="Thumbnail"
               width={previewWidth}
@@ -223,6 +252,14 @@ export default function PreviewPage() {
               width={previewWidth}
               height={previewHeight}
             />
+          </div>
+          <div>
+            <button
+              onClick={handleProcess}
+              style={{ marginTop: '1rem', padding: '0.5rem 1rem', fontSize: '1rem' }}
+            >
+              Start Processing
+            </button>
           </div>
         </div>
       ) : (
