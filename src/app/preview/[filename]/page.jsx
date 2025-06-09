@@ -5,19 +5,19 @@ import { useEffect, useRef, useState } from "react";
 
 export default function PreviewPage() {
   const { filename } = useParams(); // get filename from the route
-  const [imageUrl, setImageUrl] = useState(null); // store thumbnail image URL
-  const [threshold, setThreshold] = useState(80); // color similarity threshold for binarization
-  const [targetColor, setTargetColor] = useState("#ff0000"); // select target color
+  const [ imageUrl, setImageUrl ] = useState(null); // store thumbnail image URL
+  const [ threshold, setThreshold ] = useState(80); // threshold for binarization
+  const [ targetColor, setTargetColor ] = useState("#ff0000"); // select target color
 
   const canvasRef = useRef(null); // reference to the canvas DOM element
-  const previewRef = useRef(null); // reference to the original image DOM element (new)
+  const previewRef = useRef(null); // reference to the original image DOM element
   const previewWidth = 320; // width for preview
   const previewHeight = 240; // height for preview
 
   // fetch thumbnail when filename changes
   useEffect(() => {
     if (filename) {
-      fetchThumbnail();
+      getThumbnail();
     }
   }, [filename]);
 
@@ -25,29 +25,29 @@ export default function PreviewPage() {
   useEffect(() => {
     if (imageUrl) {
       const img = new Image();
-      img.onload = () => drawBinarized(img);
+      img.onload = () => drawBinarizedImage(img);
       img.src = imageUrl;
     }
   }, [imageUrl, threshold, targetColor]);
 
-  // fetch the video thumbnail from server
-  const fetchThumbnail = async () => {
+  // get the video thumbnail from server
+  const getThumbnail = async () => {
     const res = await fetch(`/thumbnail/${filename}`);
     const blob = await res.blob();
     setImageUrl(URL.createObjectURL(blob));
   };
 
-  // convert a hex color string to an RGB object
+  // convert a hex color string to RGB object
   const hexToRgb = (hex) => {
     const bigint = parseInt(hex.slice(1), 16);
     return {
-      r: (bigint >> 16) & 255,
-      g: (bigint >> 8) & 255,
-      b: bigint & 255,
+      red: (bigint >> 16) & 255,
+      green: (bigint >> 8) & 255,
+      blue: bigint & 255,
     };
   };
 
-  // calculate Euclidean distance between two RGB colors
+  // calculate euclidean distance between two RGB colors
   const colorDistance = (r1, g1, b1, r2, g2, b2) => {
     return Math.sqrt(
       Math.pow(r1 - r2, 2) +
@@ -56,9 +56,9 @@ export default function PreviewPage() {
     );
   };
 
-  const drawBinarized = (img) => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
+  const drawBinarizedImage = (img) => {
+    const canvas = canvasRef.current; // grabs canvas element
+    const ctx = canvas.getContext("2d"); // drawing context to be able to draw
 
     canvas.width = previewWidth;
     canvas.height = previewHeight;
@@ -83,13 +83,13 @@ export default function PreviewPage() {
         const r = data[idx];
         const g = data[idx + 1];
         const b = data[idx + 2];
-        const dist = colorDistance(r, g, b, target.r, target.g, target.b);
+        const dist = colorDistance(r, g, b, target.red, target.green, target.blue);
 
         const val = dist <= threshold ? 1 : 0;
         binary[y][x] = val;
 
         const color = val ? 255 : 0;
-        data[idx] = data[idx + 1] = data[idx + 2] = color; // Set to white or black
+        data[idx] = data[idx + 1] = data[idx + 2] = color; // set to white or black
       }
     }
 
@@ -97,7 +97,10 @@ export default function PreviewPage() {
 
     // directions for DFS (up, down, left, right)
     const directions = [
-      [-1, 0], [1, 0], [0, -1], [0, 1]
+      [-1, 0], 
+      [1, 0], 
+      [0, -1], 
+      [0, 1]
     ];
 
     // find connected components using DFS
