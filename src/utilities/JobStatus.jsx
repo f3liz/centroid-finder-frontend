@@ -19,7 +19,7 @@ export default function JobStatus({ jobId }) {
         if (res.ok) {
           if (data.status === "done") {
             setStatus("done");
-            setCsvUrl(data.result); // result path to the CSV
+            setCsvUrl(`http://localhost:3000${data.result}`); // result path to the CSV
             clearInterval(interval);
           } else if (data.status === "error") {
             setStatus("error");
