@@ -35,7 +35,7 @@ export default function Jobs() {
   // If there was an error fetching jobs
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
-  // Main job table render — no styling for now will be done with Material UI later
+  // Main job table render — no styling for now as it will be done later with Material UI
   return (
     <div>
       <h2>Job Page</h2>
@@ -52,16 +52,17 @@ export default function Jobs() {
         </thead>
         <tbody>
           {jobs.map((job) => (
-            <tr key={job.jobId}>
-              <td>{job.jobId}</td>
-              <td>{job.videoFileName}</td>
-              <td>{job.targetColor}</td>
-              <td>{job.threshold}</td>
-              <td>{capitalize(job.status)}</td>
+            <tr key={job.jobId} data-testid="job-row">
+              <td data-testid="job-id">{job.jobId}</td>
+              <td data-testid="job-video">{job.videoFileName}</td>
+              <td data-testid="job-color">{job.targetColor}</td>
+              <td data-testid="job-threshold">{job.threshold}</td>
+              <td data-testid="job-status">{capitalize(job.status)}</td>
               <td>
                 {/* Only show download link if the job is marked done */}
                 {job.status === "done" ? (
                   <a
+                    data-testid="job-download-link"
                     href={`http://localhost:3000/results/${job.outputFileName}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -69,7 +70,7 @@ export default function Jobs() {
                     Download CSV
                   </a>
                 ) : (
-                  "-" // Show dash if the job is still processing or errored
+                  <span data-testid="job-no-download">-</span> // Show dash if the job is still processing or errored
                 )}
               </td>
             </tr>

@@ -33,7 +33,7 @@ export default function VideoChooserPage() {
             <ul>
                 {videos.map((filename) => (
                     <li key={filename}>
-                        <Link href={`/preview/${filename}`}>{filename}</Link>
+                        <Link data-testid="video-link" data-filename={filename} href={`/preview/${filename}`}> {filename} </Link>
                     </li>
                     ))}
             </ul>
