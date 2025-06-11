@@ -1,0 +1,20 @@
+.navbar {
+  display: flex;
+  gap: 20px;
+  padding: 1rem;
+  background-color: #fbe9e7;
+  border-bottom: 2px solid #d84315;
+}
+
+.nav-link {
+  color: #d84315;
+  text-decoration: none;
+  font-weight: 600;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1.1rem;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+  color: #a63e0d;
+}
