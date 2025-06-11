@@ -1,7 +1,7 @@
 {
   "name": "centroid-finder-frontend",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "next build",
@@ -9,13 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "next": "15.3.2",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "15.3.2"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "cypress": "^14.4.1",
     "eslint": "^9",
-    "eslint-config-next": "15.3.2",
-    "@eslint/eslintrc": "^3"
+    "eslint-config-next": "15.3.2"
   }
 }
