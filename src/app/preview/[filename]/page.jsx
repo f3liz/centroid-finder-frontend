@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-// Component imports
+// imports
 import ThumbnailPreview from "@/utilities/ThumbnailPreview";
 import LiveTuner from "@/utilities/LiveTuner";
 import ProcessButton from "@/utilities/ProcessButton";
@@ -20,7 +20,7 @@ export default function PreviewPage() {
   const binarizedCanvasRef = useRef(null); // reference to the canvas DOM element
   const originalImageRef = useRef(null); // reference to the original image DOM element
 
-  // Fetch thumbnail when filename changes
+  // fetch thumbnail when filename changes
   useEffect(() => {
     const getThumbnail = async () => {
       const res = await fetch(`http://localhost:3000/thumbnail/${filename}`);
@@ -38,7 +38,7 @@ export default function PreviewPage() {
         <h1>Preview</h1>
         <p>Video being previewed: <strong>{filename}</strong></p>
 
-        {/* Step 1: Tuning controls go on top */}
+        {/* tuning goes on top */}
         <LiveTuner
             imageUrl={imageUrl}
             canvasRef={binarizedCanvasRef}
@@ -49,7 +49,7 @@ export default function PreviewPage() {
             originalImageRef={originalImageRef}
         />
 
-        {/* Step 2: Image previews side by side */}
+        {/* previews side by side */}
         <div style={{ display: "flex", gap: "2rem", marginTop: "1rem" }}>
             <ThumbnailPreview
                     imageUrl={imageUrl}
@@ -67,7 +67,7 @@ export default function PreviewPage() {
             </div>
         </div>
 
-        {/* Step 3: Button under images */}
+        {/* process button under images */}
         <div style={{ marginTop: "1.5rem" }}>
             <ProcessButton
                 filename={filename}
@@ -77,7 +77,7 @@ export default function PreviewPage() {
             />
         </div>
 
-        {/* Step 4: Job status under the button */}
+        {/* job status under the button */}
         <div style={{ marginTop: "1rem" }}>
             {jobId && <JobStatus jobId={jobId} />}
         </div>
