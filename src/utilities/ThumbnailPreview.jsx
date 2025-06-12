@@ -3,7 +3,6 @@
 export default function ThumbnailPreview({ imageUrl, originalImageRef }) {
   return (
     <div>
-      <h3>Original Frame</h3>
       {/* only render the image if imageUrl is there */}
       {imageUrl ? (
         <img

@@ -31,6 +31,9 @@ export default function VideoChooserPage() {
         {videos.map((filename) => (
           <ListItem
             key={filename}
+            button
+            component={Link}
+            href={`/preview/${filename}`}
             sx={{
               backgroundColor: "background.paper",
               borderRadius: 1,
@@ -39,22 +42,20 @@ export default function VideoChooserPage() {
               "&:hover": {
                 backgroundColor: "#ffe0b2",
               },
+              textDecoration: "none",
+              color: "inherit",
+              cursor: "pointer",
             }}
           >
             <ListItemText
               primary={
-                <Link
+                <Typography
                   data-testid="video-link"
                   data-filename={filename}
-                  href={`/preview/${filename}`}
-                  style={{
-                    textDecoration: "none",
-                    color: "#d84315",
-                    fontWeight: 500,
-                  }}
+                  sx={{ color: "#d84315", fontWeight: 500, textDecoration: "none" }}
                 >
                   {filename}
-                </Link>
+                </Typography>
               }
             />
           </ListItem>
