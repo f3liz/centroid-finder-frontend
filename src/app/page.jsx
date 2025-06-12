@@ -1,16 +1,37 @@
 "use client";
 
-import { Typography } from "@mui/material";
+import { Typography, Box, Button } from "@mui/material"; // import mui components
 
 export default function Home() {
   return (
-    <div style={{ textAlign: 'center' }}>
-      <Typography variant="h3" component="h1" gutterBottom>
-        Welcome to the Salamander Home Page
+    // box is a mui component similar to div
+    <Box
+      sx={{
+        maxWidth: 600,
+        margin: "auto",
+        padding: 4,
+        textAlign: "center",
+        backgroundColor: "background.paper",
+        borderRadius: 2,
+        boxShadow: 3,
+      }}
+    >
+      <Typography variant="h3" component="h1" gutterBottom color="primary">
+        Welcome to the Salamander Video Tracker Home Page
       </Typography>
-      <Typography variant="body1" sx={{ mt: 2 }}>
-        Process videos, check job statuses, or download csv files.
+
+      <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
+        You can process videos or track job statuses/download their csv files.
       </Typography>
-    </div>
+
+      <Box sx={{ mt: 4, display: "flex", justifyContent: "center", gap: 2 }}>
+        <Button variant="contained" color="primary" href="/videos">
+          Go to Salamander Videos
+        </Button>
+        <Button variant="outlined" color="secondary" href="/jobs">
+          View Job Statuses/CSV Links
+        </Button>
+      </Box>
+    </Box>
   );
 }
