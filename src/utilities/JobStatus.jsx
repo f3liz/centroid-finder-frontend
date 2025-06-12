@@ -46,7 +46,7 @@ export default function JobStatus({ jobId }) {
     <div>
       {status === "processing" && <p style={{ color: "orange" }}>Processing...</p>}
       {status === "done" && csvUrl && (
-        <p style={{ color: "green" }}>Done! <a href={csvUrl} download>Download result.csv</a></p>
+        <p style={{ color: "green" }}>Done! <a data-testid="job-download-link" href={csvUrl} download>Download result.csv</a></p>
       )}
       {status === "error" && <p style={{ color: "red" }}>Error: {error}</p>}
     </div>
