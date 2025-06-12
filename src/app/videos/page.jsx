@@ -31,7 +31,7 @@ export default function VideoChooserPage() {
         {videos.map((filename) => (
           <ListItem
             key={filename}
-            button
+            button="true"
             component={Link}
             href={`/preview/${filename}`}
             sx={{
