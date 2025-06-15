@@ -1,6 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  Box,
+  Typography,
+  Link,
+  Paper,
+} from "@mui/material";
 
 export default function JobStatus({ jobId }) {
   const [status, setStatus] = useState("processing");
@@ -43,12 +49,52 @@ export default function JobStatus({ jobId }) {
   }, [jobId]);
 
   return (
-    <div>
-      {status === "processing" && <p style={{ color: "orange" }}>Processing...</p>}
-      {status === "done" && csvUrl && (
-        <p style={{ color: "green" }}>Done! <a data-testid="job-download-link" href={csvUrl} download>Download result.csv</a></p>
+    <Paper
+      elevation={4}
+      sx={{
+        marginTop: 3,
+        padding: 3,
+        borderRadius: 3,
+        backgroundColor: "background.paper",
+        color: "text.primary",
+        minHeight: 50,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        flexDirection: "column",
+      }}
+    >
+      {status === "processing" && (
+        <Typography variant="body1" sx={{ color: "primary.main", fontWeight: 500 }}>
+          Processing your request...
+        </Typography>
       )}
-      {status === "error" && <p style={{ color: "red" }}>Error: {error}</p>}
-    </div>
+
+      {status === "done" && csvUrl && (
+        <>
+          <Typography variant="body1" sx={{ color: "secondary.main", fontWeight: 500 }}>
+            Done! Your results are ready.
+          </Typography>
+          <Link
+            href={csvUrl}
+            download
+            underline="hover"
+            color="primary"
+            data-testid="job-download-link"
+            sx={{ fontSize: "1rem", marginTop: 0.5 }}
+          >
+            Click here to download result.csv
+          </Link>
+        </>
+      )}
+
+      {status === "error" && (
+        <Typography variant="body1" sx={{ color: "error.main", fontWeight: 500 }}>
+          Error: {error}
+        </Typography>
+      )}
+    </Paper>
   );
 }
+

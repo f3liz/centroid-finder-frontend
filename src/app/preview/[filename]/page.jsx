@@ -38,8 +38,10 @@ export default function PreviewPage() {
     <Box
       sx={{
         maxWidth: 900,
-        mx: "auto",
-        px: 2,
+        marginLeft: "auto",
+        marginRight: "auto",
+        paddingLeft: 2,
+        paddingRight: 2,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

@@ -37,7 +37,7 @@ export default function VideoChooserPage() {
             sx={{
               backgroundColor: "background.paper",
               borderRadius: 1,
-              mb: 1,
+              marginBottom: 1,
               boxShadow: 1,
               "&:hover": {
                 backgroundColor: "#ffe0b2",
