@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Salamander Video Tracker Website",
   icons: {
-    icon: "/SalamanderTransparent.png",
+    icon: "/SalamanderTransparent.png"
   },
 };
 

@@ -5,7 +5,7 @@ import {
   Box,
   Typography,
   Link,
-  Paper,
+  Paper
 } from "@mui/material";
 
 export default function JobStatus({ jobId }) {
@@ -62,7 +62,7 @@ export default function JobStatus({ jobId }) {
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-        flexDirection: "column",
+        flexDirection: "column"
       }}
     >
       {status === "processing" && (

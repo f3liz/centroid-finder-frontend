@@ -9,7 +9,7 @@ export default function ProcessButton({ filename, threshold, targetColor, onJobS
 
       // Sending the POST request to the backend with the filename, target color, and threshold
       const res = await fetch(`http://localhost:3000/process/${filename}?targetColor=${hex}&threshold=${threshold}`, {
-        method: "POST",
+        method: "POST"
       });
 
       const data = await res.json();

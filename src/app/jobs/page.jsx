@@ -1,82 +1,160 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  Box,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  Link
+} from "@mui/material";
+
+// custom hook for logic
+import FetchJobs from "@/utilities/FetchJobs";
+
+// Helper to capitalize first letter of job status like "Done" instead of "done"
+const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
 
 export default function Jobs() {
-  // State to hold jobs returned from the backend
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true); // Creating loading state for initial fetch
-  const [error, setError] = useState(null);     // Creating error state if fetch fails
-
-  // Helper to capitalize first letter of job status like "Done" instead of "done"
-  const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
-
-  // Fetch all job data from the backend
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const res = await fetch("http://localhost:3000/jobs"); // Call backend /jobs route
-        const data = await res.json();                          // Parse returned JSON
-        setJobs(data);                                          // Store data in jobs state
-      } catch (err) {
-        console.error("Error fetching jobs:", err);
-        setError("Failed to load jobs.");
-      } finally {
-        setLoading(false); // Set loading to false regardless of success or failure
-      }
-    };
-
-    fetchJobs();
-  }, []);
+  const { jobs, loading, error } = FetchJobs(); // logic from utilities
 
   // While jobs are still loading
-  if (loading) return <p>Loading jobs...</p>;
+  if (loading) {
+    return (
+      <Typography sx={{ textAlign: "center", marginTop: "2rem" }}>
+        Loading jobs...
+      </Typography>
+    );
+  }
 
   // If there was an error fetching jobs
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (error) {
+    return (
+      <Typography sx={{ color: "error.main", textAlign: "center", marginTop: "2rem" }}>
+        {error}
+      </Typography>
+    );
+  }
 
-  // Main job table render — no styling for now as it will be done later with Material UI
+  // Main job table render
   return (
-    <div>
-      <h2>Job Page</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Job ID</th>
-            <th>Video</th>
-            <th>Color</th>
-            <th>Threshold</th>
-            <th>Status</th>
-            <th>Result</th>
-          </tr>
-        </thead>
-        <tbody>
-          {jobs.map((job) => (
-            <tr key={job.jobId} data-testid="job-row">
-              <td data-testid="job-id">{job.jobId}</td>
-              <td data-testid="job-video">{job.videoFileName}</td>
-              <td data-testid="job-color">{job.targetColor}</td>
-              <td data-testid="job-threshold">{job.threshold}</td>
-              <td data-testid="job-status">{capitalize(job.status)}</td>
-              <td>
-                {/* Only show download link if the job is marked done */}
-                {job.status === "done" ? (
-                  <a
-                    data-testid="job-download-link"
-                    href={`http://localhost:3000/results/${job.outputFileName}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Download CSV
-                  </a>
-                ) : (
-                  <span data-testid="job-no-download">-</span> // Show dash if the job is still processing or errored
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Box
+      sx={{
+        maxWidth: "1000px",
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginTop: "2rem",
+        paddingLeft: "1rem",
+        paddingRight: "1rem"
+      }}
+    >
+      <Typography
+        variant="h4"
+        sx={{
+          marginBottom: "1.5rem",
+          color: "primary.main",
+          textAlign: "center"
+        }}
+      >
+        Job Page
+      </Typography>
+
+      <TableContainer
+        component={Paper}
+        sx={{
+          borderRadius: "16px",
+          border: "1px solid black", // black border around table
+          overflow: "hidden"
+        }}
+      >
+        <Table
+          sx={{
+            borderCollapse: "separate",
+            borderSpacing: "0 0"
+          }}
+        >
+          <TableHead
+            sx={{
+              backgroundColor: "#ffe0b2"
+            }}
+          >
+            <TableRow
+              sx={{
+                borderBottom: "2px solid black" // a black line below the header
+              }}
+            >
+              <TableCell sx={{ borderRight: "1px solid black" }}>
+                <strong>Job ID</strong>
+              </TableCell>
+              <TableCell sx={{ borderRight: "1px solid black" }}>
+                <strong>Video</strong>
+              </TableCell>
+              <TableCell sx={{ borderRight: "1px solid black" }}>
+                <strong>Color</strong>
+              </TableCell>
+              <TableCell sx={{ borderRight: "1px solid black" }}>
+                <strong>Threshold</strong>
+              </TableCell>
+              <TableCell sx={{ borderRight: "1px solid black" }}>
+                <strong>Status</strong>
+              </TableCell>
+              <TableCell>
+                <strong>Result</strong>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {jobs.map((job, index) => (
+              <TableRow
+                key={job.jobId}
+                data-testid="job-row"
+                sx={{
+                  backgroundColor: index % 2 === 0 ? "background.default" : "#fffaf0",
+                  borderBottom: "1px solid black", // a black line between rows
+                }}
+              >
+                <TableCell sx={{ borderRight: "1px solid black" }} data-testid="job-id">
+                  {job.jobId}
+                </TableCell>
+                <TableCell sx={{ borderRight: "1px solid black" }} data-testid="job-video">
+                  {job.videoFileName}
+                </TableCell>
+                <TableCell sx={{ borderRight: "1px solid black" }} data-testid="job-color">
+                  {job.targetColor}
+                </TableCell>
+                <TableCell sx={{ borderRight: "1px solid black" }} data-testid="job-threshold">
+                  {job.threshold}
+                </TableCell>
+                <TableCell sx={{ borderRight: "1px solid black" }} data-testid="job-status">
+                  {capitalize(job.status)}
+                </TableCell>
+                <TableCell>
+                  {job.status === "done" ? (
+                    <Link
+                      data-testid="job-download-link"
+                      href={`http://localhost:3000/results/${job.outputFileName}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      underline="hover"
+                      color="primary"
+                    >
+                      Download CSV
+                    </Link>
+                  ) : (
+                    <Typography data-testid="job-no-download" color="text.secondary">
+                      -
+                    </Typography>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 }

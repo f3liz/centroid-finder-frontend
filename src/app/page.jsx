@@ -13,7 +13,7 @@ export default function Home() {
         textAlign: "center",
         backgroundColor: "background.paper",
         borderRadius: 2,
-        boxShadow: 3,
+        boxShadow: 3
       }}
     >
       <Typography variant="h3" component="h1" gutterBottom color="primary">
@@ -40,7 +40,7 @@ export default function Home() {
           style={{
             maxWidth: "100%",
             height: "300px",
-            borderRadius: "8px",
+            borderRadius: "8px"
           }}
         />
       </Box>

@@ -45,7 +45,7 @@ export default function PreviewPage() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        textAlign: "center",
+        textAlign: "center"
       }}
     >
       <h1>Preview</h1>
@@ -70,7 +70,7 @@ export default function PreviewPage() {
           flexWrap: "wrap",
           justifyContent: "center",
           marginTop: "1rem",
-          width: "100%",
+          width: "100%"
         }}
       >
         {/* original preview */}

@@ -44,7 +44,7 @@ export default function VideoChooserPage() {
               },
               textDecoration: "none",
               color: "inherit",
-              cursor: "pointer",
+              cursor: "pointer"
             }}
           >
             <ListItemText
