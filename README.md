@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Salamander Tracker – Frontend
 
-## Getting Started
+This is the React/Next.js frontend for the Salamander Tracker app, a tool for submitting and previewing salamander observation videos. Users can:
 
-First, run the development server:
+- Upload videos for analysis
+- View video thumbnails and preview frames
+- Submit processing jobs to the backend
+- Monitor job status and download results as CSV files
+
+
+## Setup Instructions
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/your-username/salamander-frontend.git
+   cd salamander-frontend
+   ```
+
+2. **Install dependencies**
+
+    ```bash
+    npm install
+    ```
+
+3. **Run the development server**
+
+    ```bash
+    npm run dev 
+    ```
+
+This app will be available at http://localhost:3001
+
+
+## Running Tests
+
+This project includes Cypress tests for integration testing.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run test
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technologies Used
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- [Next.js](https://nextjs.org/) - React framework with server-side rendering and routing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [React](https://react.dev/) - JavaScript library for building user interfaces
 
-## Learn More
+- [Material UI](https://mui.com/) - UI component library for styling
 
-To learn more about Next.js, take a look at the following resources:
+- [Cypress](https://www.cypress.io/) - End-to-end and Component testing framework
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## API Integration
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This frontend communicates with the Express backend for:
 
-## Deploy on Vercel
+- /thumbnail/:filename – Grabbing video thumbnails
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- /process – Submitting video files for processing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- /status/:jobId – Checking job status
+
+- /results/:filename – Downloading CSV result files
+
+- /jobs - Retrieving for all previous jobs
+
+Make sure the backend is running at the expected URL (http://localhost:3000 or Docker port).
+
+## Special Notes
+
+- No login is required.
+
+- The backend automatically clones and builds this repo as part of its Docker image (hosted on GHCR).
+
+- The backend is needed to run this frontend completely.
+
+## Related Repositories
+
+- [Salamander Tracker - Backend + Java Batch Processor](https://github.com/f3liz/centroid-finder/tree/image)
+
+## License
+
+MIT License - see [LICENSE](./LICENSE) for details.
