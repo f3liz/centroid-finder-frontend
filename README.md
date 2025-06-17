@@ -7,8 +7,35 @@ This is the React/Next.js frontend for the Salamander Tracker app, a tool for su
 - Submit processing jobs to the backend
 - Monitor job status and download results as CSV files
 
+## Setup Instructions (with Docker) (Recommended)
 
-## Setup Instructions
+### Option 1: Run Prebuilt Image from GHCR (Recommended)
+
+```bash
+docker run \
+  -p 3000:3000 \
+  -p 3001:3001 \
+  -v "$VIDEO_DIRECTORY:/videos" \   # Path to local video files
+  -v "$RESULTS_DIRECTORY:/results" \ # Path to save CSV output
+  ghcr.io/alexanderoruban/salamander:latest
+```
+
+### Option 2: Build Image Locally (For Developers)
+
+```bash
+docker build --no-cache -t ghcr.io/alexanderoruban/salamander .
+docker run \
+  -p 3000:3000 \
+  -p 3001:3001 \
+  -v "$VIDEO_DIRECTORY:/videos" \
+  -v "$RESULTS_DIRECTORY:/results" \
+  ghcr.io/alexanderoruban/salamander:latest
+```
+
+The backend will be available at http://localhost:3000, and the frontend (cloned and built during the Docker process) will be available at http://localhost:3001.
+
+
+## Setup Instructions (without Docker and Backend)
 
 1. **Clone the repository**
 
