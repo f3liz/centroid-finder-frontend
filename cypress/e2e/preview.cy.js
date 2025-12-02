@@ -1,7 +1,7 @@
 describe('Preview Page', () => {
   beforeEach(() => {
     // Mocking the GET request to /thumbnail/ensantina.mp4
-    cy.intercept('GET', 'http://localhost:3000/thumbnail/ensantina.mp4', {
+    cy.intercept('GET', '**/thumbnail/ensantina.mp4*', {
       statusCode: 200,
       headers: { 'content-type': 'image/png' },
       body: new Blob(['fake-thumbnail-image'], { type: 'image/png' })
@@ -31,13 +31,13 @@ describe('Preview Page', () => {
 
   it('should start a job and show status when process button is clicked', () => {
     // Mocking the POST request to /process/ensantina.mp4
-    cy.intercept('POST', 'http://localhost:3000/process/ensantina.mp4*', {
+    cy.intercept('POST', '**/process/ensantina.mp4*', {
       statusCode: 200,
       body: { jobId: 'f1a1fac2-ab7f-4e10-9b09-e9ecb27a94b6' }
     }).as('startJob'); // Saving the mock data as 'startJob'
 
-    // Mocking the GET request to /process/jobId/status to check job status
-    cy.intercept('GET', 'http://localhost:3000/process/f1a1fac2-ab7f-4e10-9b09-e9ecb27a94b6/status', {
+    // Mocking the GET request to job status
+    cy.intercept('GET', '**/process/f1a1fac2-ab7f-4e10-9b09-e9ecb27a94b6/status*', {
       statusCode: 200,
       body: {
         jobId: 'f1a1fac2-ab7f-4e10-9b09-e9ecb27a94b6',
