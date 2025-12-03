@@ -1,7 +1,7 @@
 describe('Preview Page', () => {
   beforeEach(() => {
     // Mocking the GET request to /thumbnail/ensantina.mp4
-    cy.intercept('GET', '**/thumbnail/ensantina.mp4*', {
+    cy.intercept('GET', 'http://localhost:3000/thumbnail/ensantina.mp4', {
       statusCode: 200,
       headers: { 'content-type': 'image/png' },
       body: new Blob(['fake-thumbnail-image'], { type: 'image/png' })
@@ -31,20 +31,24 @@ describe('Preview Page', () => {
 
   it('should start a job and show status when process button is clicked', () => {
     // Mocking the POST request to /process/ensantina.mp4
-    cy.intercept('POST', '**/process/ensantina.mp4*', {
+    cy.intercept('POST', 'http://localhost:3000/process/ensantina.mp4*', {
       statusCode: 200,
       body: { jobId: 'f1a1fac2-ab7f-4e10-9b09-e9ecb27a94b6' }
     }).as('startJob'); // Saving the mock data as 'startJob'
 
-    // Mocking the GET request to job status
-    cy.intercept('GET', '**/process/f1a1fac2-ab7f-4e10-9b09-e9ecb27a94b6/status*', {
-      statusCode: 200,
-      body: {
-        jobId: 'f1a1fac2-ab7f-4e10-9b09-e9ecb27a94b6',
-        status: 'done',
-        result: '/f1a1fac2-ab7f-4e10-9b09-e9ecb27a94b6/result.csv'
+    // Mocking the GET request to /process/jobId/status to check job status
+    cy.intercept(
+      'GET',
+      'http://localhost:3000/process/f1a1fac2-ab7f-4e10-9b09-e9ecb27a94b6/status',
+      {
+        statusCode: 200,
+        body: {
+          jobId: 'f1a1fac2-ab7f-4e10-9b09-e9ecb27a94b6',
+          status: 'done',
+          result: '/f1a1fac2-ab7f-4e10-9b09-e9ecb27a94b6/result.csv'
+        }
       }
-    }).as('getJobStatus'); // Saving the mock data as 'getJobStatus'
+    ).as('getJobStatus'); // Saving the mock data as 'getJobStatus'
 
     // Clicking the process button to trigger the job
     cy.contains('Start Processing').click();
@@ -55,10 +59,12 @@ describe('Preview Page', () => {
 
     // Checking the job status shows "Done!" with a download link
     cy.contains('Done!').should('exist');
-    cy.contains('Download result.csv').should('exist');
+
+    // Updated: UI text says "Click here to download result.csv"
+    cy.contains('Click here to download result.csv').should('exist');
 
     // Making sure the download link points to the correct result file
-    cy.contains('a', 'Download result.csv')
+    cy.contains('a', 'download result.csv')
       .should('have.attr', 'href')
       .and('include', 'f1a1fac2-ab7f-4e10-9b09-e9ecb27a94b6/result.csv');
   });
