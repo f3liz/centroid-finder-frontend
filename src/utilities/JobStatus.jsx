@@ -7,6 +7,7 @@ import {
   Link,
   Paper
 } from "@mui/material";
+import { API_URL } from "@/utilities/api"; // global API URL
 
 export default function JobStatus({ jobId }) {
   const [status, setStatus] = useState("processing");
@@ -19,13 +20,13 @@ export default function JobStatus({ jobId }) {
 
     const interval = setInterval(async () => {
       try {
-        const res = await fetch(`http://localhost:3000/process/${jobId}/status`);
+        const res = await fetch(`${API_URL}/process/${jobId}/status`);
         const data = await res.json();
 
         if (res.ok) {
           if (data.status === "done") {
             setStatus("done");
-            setCsvUrl(`http://localhost:3000${data.result}`); // result path to the CSV
+            setCsvUrl(`${API_URL}${data.result}`); // result path to the CSV
             clearInterval(interval);
           } else if (data.status === "error") {
             setStatus("error");
@@ -97,4 +98,3 @@ export default function JobStatus({ jobId }) {
     </Paper>
   );
 }
-

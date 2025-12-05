@@ -9,6 +9,7 @@ import ThumbnailPreview from "@/utilities/ThumbnailPreview";
 import LiveTuner from "@/utilities/LiveTuner";
 import ProcessButton from "@/utilities/ProcessButton";
 import JobStatus from "@/utilities/JobStatus";
+import { API_URL } from "@/utilities/api";  // import shared API URL
 
 export default function PreviewPage() {
   const { filename } = useParams(); // get filename from the route
@@ -24,7 +25,7 @@ export default function PreviewPage() {
   // fetch thumbnail when filename changes
   useEffect(() => {
     const getThumbnail = async () => {
-      const res = await fetch(`http://localhost:3000/thumbnail/${filename}`);
+      const res = await fetch(`${API_URL}/thumbnail/${filename}`);
       const blob = await res.blob();
       setImageUrl(URL.createObjectURL(blob));
     };

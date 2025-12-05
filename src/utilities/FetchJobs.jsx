@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { API_URL } from "@/utilities/api";  // import shared API URL
 
 // Custom hook to fetch job data
 export default function FetchJobs() {
@@ -11,9 +12,9 @@ export default function FetchJobs() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await fetch("http://localhost:3000/jobs"); // Call backend /jobs route
-        const data = await res.json();                          // Parse returned JSON
-        setJobs(data);                                          // Store data in jobs state
+        const res = await fetch(`${API_URL}/jobs`); // Call backend /jobs route
+        const data = await res.json();              // Parse returned JSON
+        setJobs(data);                              // Store data in jobs state
       } catch (err) {
         console.error("Error fetching jobs:", err);
         setError("Failed to load jobs.");

@@ -1,5 +1,7 @@
 "use client";
 
+import { API_URL } from "@/utilities/api"; // import global API base URL
+
 export default function ProcessButton({ filename, threshold, targetColor, onJobStarted }) {
   // Handle the POST request to start processing the video on the backend
   const handleProcess = async () => {
@@ -8,9 +10,10 @@ export default function ProcessButton({ filename, threshold, targetColor, onJobS
       const hex = targetColor.replace("#", "");
 
       // Sending the POST request to the backend with the filename, target color, and threshold
-      const res = await fetch(`http://localhost:3000/process/${filename}?targetColor=${hex}&threshold=${threshold}`, {
-        method: "POST"
-      });
+      const res = await fetch(
+        `${API_URL}/process/${filename}?targetColor=${hex}&threshold=${threshold}`,
+        { method: "POST" }
+      );
 
       const data = await res.json();
 

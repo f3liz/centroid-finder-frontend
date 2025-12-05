@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Box, Typography, List, ListItem, ListItemText } from "@mui/material";
+import { API_URL } from "@/utilities/api";  // import shared API URL
 
 export default function VideoChooserPage() {
   // state to hold video filenames
@@ -15,7 +16,7 @@ export default function VideoChooserPage() {
 
   // fetch video list from API get route
   const getVideos = async () => {
-    const res = await fetch("http://localhost:3000/api/videos");
+    const res = await fetch(`${API_URL}/api/videos`);
     const data = await res.json();
     setVideos(data);
   };

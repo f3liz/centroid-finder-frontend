@@ -15,6 +15,7 @@ import {
 
 // custom hook for logic
 import FetchJobs from "@/utilities/FetchJobs";
+import { API_URL } from "@/utilities/api"; // import global API base URL
 
 // Helper to capitalize first letter of job status like "Done" instead of "done"
 const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
@@ -136,7 +137,7 @@ export default function Jobs() {
                   {job.status === "done" ? (
                     <Link
                       data-testid="job-download-link"
-                      href={`http://localhost:3000/results/${job.outputFileName}`}
+                      href={`${API_URL}/results/${job.outputFileName}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       underline="hover"
